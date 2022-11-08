@@ -1,0 +1,161 @@
+@font-face {
+  font-family: 'Crimson Text', serif;
+    src: url('./CrimsonText-Regular.ttf') format('ttf');
+  font-weight: 600;
+  font-style: normal;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+nav {
+  background-color: rgba(28, 75, 141, 0.643);
+  color: white;
+  padding: 20px 10px;
+  border-bottom: 1px solid gray;
+  box-shadow: 2px 2px 0px -1px rgba(0,0,0,0.18);
+}
+
+ul {
+  list-style: none;
+}
+
+input[type='button'] {
+  font-family: 'Crimson Text', serif;
+}
+
+.sidebar {
+  padding: 10px 20px;
+  background-color: #10DADE;
+  border-right: 1px solid gray;
+}
+
+.new-project {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  margin: 10px 0 20px 0;
+  font-family: 'Crimson Text', serif;
+}
+
+.new-project:hover {
+  color: red;
+}
+
+#content {
+  display: flex;
+  flex: 1;
+  position: relative;
+}
+
+
+
+.project-form h3,
+.item-form > h3
+ {
+  text-align: center;
+}
+
+.project-form p,
+.item-form  p {
+  font-size: 20px;
+}
+
+label {
+  display: flex;
+  gap: 5px;
+  flex-direction: column;
+  padding-top: 8px;
+}
+
+.project-form input[type='button'],
+#createTodo {
+  border: none;
+  box-shadow: 2px 2px 0px -1px rgba(0,0,0,0.18);
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 10px;
+  padding: 5px;
+  width: 30%;
+  align-self: flex-end;
+}
+
+.project-form input[type='button']:hover,
+#createTodo:hover {
+  background-color: green;
+}
+
+.close-button {
+  position: absolute;
+  right: 25px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.close-button:hover {
+  color: red;
+}
+
+
+li {
+  cursor: pointer;
+  margin-top: 10px;
+  text-align: end;
+}
+
+li:hover {
+  color: red;
+}
+
+.main {
+  flex: 1;
+  padding: 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.new-item {
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  font-size: 20px;
+  font-family: 'Crimson Text', serif;
+  right: 20px;
+}
+
+.new-item:hover {
+  color: red;
+}
+
+.item-form,
+.project-form {
+  position: absolute;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  top: 20%;
+  right: calc(50% - 225px);
+  padding: 20px;
+  border: 1px solid black;
+  border-radius: 5px;
+  width: 450px;
+}
+
+
+.item-form label {
+  display: flex;
+  flex-direction: column;
+}
+
