@@ -49,7 +49,6 @@ function _showProjectForm(){
   if (document.getElementsByClassName('project-form').length > 0) {
     return
   };
-
   let div  = document.createElement('div');
   div.className = 'project-form'
   let title = document.createElement('h3');
@@ -87,8 +86,14 @@ function _showProjectForm(){
 
   inputButton.addEventListener('click', (e)=> {
     let projectName = document.getElementById('projectName').value;
+    if (projectName.length == 0 ){
+      let content = document.getElementById('content');
+      return content.appendChild(_errorModal('O projeto precisa ter um nome!'));
+    }
     let projectDescription = document.getElementById('projectDescription').value;
     user.appendProject(new Project(projectName, projectDescription));
+    alert('Projeto ' + projectName + ' criado!')
+    _closeErrorModal();
     _closeForm(e);
     let sidebar = document.getElementsByClassName('sidebar')[0];
     let list = document.getElementsByClassName('projects')[0];
@@ -146,11 +151,13 @@ function _showProjects(){
     projectName.textContent = user.project_list[i].name;
     projectName.addEventListener('click', () => {
       _renderProject(user.project_list[i]);
+      _renderItems(projectName.textContent);
     })
     ul.appendChild(projectName);
   }
   div.appendChild(ul);
   return div;
+  // ATUALIZAR RENDERIZACAO DOS ITENS AQUI!
 }
 
 
@@ -194,8 +201,7 @@ function _showItemForm(){
   title.id = 'title';
   title.name = 'title';
   titleLabel.appendChild(title);
-  
-  
+
   const descriptionLabel = document.createElement('label');
   descriptionLabel.innerText = 'Descrição';
   const description = document.createElement('textarea');
@@ -226,13 +232,23 @@ function _showItemForm(){
   inputButton.type = 'button';
   inputButton.id = 'createTodo';
   inputButton.value = 'SALVAR';
+  
 
-
-  inputButton.addEventListener('click', ()=> {
+  inputButton.addEventListener('click', (e)=> {
+    if (title.value.length == 0 || dueDate.value.length == 0) {
+      let content = document.getElementById('content');
+      return content.appendChild(_errorModal('A tarefa precisa ter no mínimo um nome e uma data!'));
+    }
     let projectName = document.getElementById('actual-project').textContent;
-    let teste = user.searchProject(projectName);
-    console.log(teste);
-    
+    let obj = user.searchProject(projectName);
+    console.log(obj)
+    obj.items.push(new Item(title.value, description.value, dueDate.value, priority.value));
+    alert('Item criado no projeto ' + projectName)
+
+    _closeErrorModal();
+    _closeForm(e);
+    // ATUALIZAR RENDERIZACAO DOS ITENS AQUI!
+    _renderItems(projectName)
   });
 
 
@@ -261,4 +277,139 @@ function _priorityOptions(){
   high.text  = "Alta";
 
   return {low, medium, high}
+}
+
+
+function _renderItems(projectName){
+  if (document.getElementsByClassName('items-table').length > 0) {
+    let div = document.getElementsByClassName('items-table')[0];
+    div.remove();
+  };
+  let project = user.searchProject(projectName);
+  let main = document.getElementsByClassName('main')[0];
+  main.appendChild(_createTable());
+  let table = document.getElementsByClassName('items-table')[0];
+
+  project.items.forEach( (e,i) => {
+    let tr = document.createElement('tr');
+    tr.dataset.index = i;
+    let td1 = document.createElement('td');
+    td1.textContent = e.title;
+    let td2 = document.createElement('td');
+    td2.textContent = e.description;
+    let td3 = document.createElement('td');
+    td3.textContent = e.dueDate;
+    let td4 = document.createElement('td');
+    td4.className = 'flex';
+    let signaling = document.createElement('div')
+
+    switch(e.priority){
+      case 'low':
+        signaling.className = 'low';
+        break;
+      case 'medium':
+        signaling.className = 'medium'
+        break;  
+      case 'high':
+        signaling.className = 'high';
+        break
+    }
+    td4.appendChild(signaling);
+    if (e.finished == true) {
+      td1.classList.add('finished');
+      td2.classList.add('finished');
+      td3.classList.add('finished');
+      td4.classList.add('finished');
+    } else {
+      td1.classList.remove('finished');
+      td2.classList.remove('finished');
+      td3.classList.remove('finished');
+      td4.classList.remove('finished');
+    }
+
+    
+    let td5 = document.createElement('td');
+
+    let checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.value = e.finished
+    e.finished == true ? checkbox.checked = true : checkbox.checked = false;
+    checkbox.addEventListener('change', () => {
+      e.finished == false ? e.finished = true : e.finished = false;
+      console.log(e.finished);
+      return _renderItems(projectName);
+    })
+    td5.appendChild(checkbox);
+    let td6 = document.createElement('td')
+
+    let deleteButton = document.createElement('input');
+    deleteButton.type = 'button';
+    deleteButton.value = 'EXCLUIR'
+    deleteButton.addEventListener('click', () => {  
+      project.items.splice(tr.dataset.index,1);
+      _renderItems(projectName);
+    })
+    td6.appendChild(deleteButton);
+    tr.appendChild(td1);
+    tr.appendChild(td2);
+    tr.appendChild(td3);
+    tr.appendChild(td4);
+    tr.appendChild(td5);
+    tr.appendChild(td6);
+    
+    table.append(tr);
+  });
+}
+
+function _createTable(){
+  let table = document.createElement('table');
+  table.className = 'items-table';
+  let tr = document.createElement('tr');
+  let th1 = document.createElement('th');
+  th1.textContent = 'Tarefa'
+  let th2 = document.createElement('th')
+  th2.textContent = 'Descrição'
+  let th3 = document.createElement('th')
+  th3.textContent = 'Data limite';
+  let th4 = document.createElement('th')
+  th4.textContent = 'Prioridade'
+  let th5 = document.createElement('th')
+  th5.textContent = 'Status'
+  let th6 = document.createElement('th')
+  th6.textContent = ' '
+  tr.appendChild(th1);
+  tr.appendChild(th2)
+  tr.appendChild(th3);
+  tr.appendChild(th4);
+  tr.appendChild(th5);
+  tr.appendChild(th6);
+  table.appendChild(tr);
+  return table
+}
+
+function _errorModal(message){
+  if (document.getElementsByClassName('error-modal').length > 0) {
+    return
+  };
+  let div = document.createElement('div')
+  let closeButton = document.createElement('p');
+  closeButton.textContent = 'X';
+  closeButton.className = 'close-button' 
+  closeButton.addEventListener('click', (e) => {
+    _closeForm(e);
+  })
+  div.className = 'error-modal';
+  let text = document.createElement('p')
+  text.className = 'error-text';
+  text.textContent = message;
+  div.appendChild(text);
+  div.appendChild(closeButton);
+  return div
+} 
+
+function _closeErrorModal(){
+  let errorModal = document.getElementsByClassName('error-modal')[0];
+  if (errorModal) {
+    return errorModal.remove();
+  }
 }

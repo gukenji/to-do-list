@@ -4,8 +4,9 @@ export default class User {
   };
 
   searchProject(projectName){
-    this.project_list.find( x => x.name == projectName);
-    
+    let obj;
+    this.project_list.forEach( (element) => {if (element.name == projectName) obj = element});
+    return obj;
   };
 
   appendProject(project){

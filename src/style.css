@@ -11,8 +11,11 @@
   box-sizing: border-box;
 }
 
+html, body{
+  height: 100%;
+  width:100%;
+}
 body {
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
@@ -140,7 +143,8 @@ li:hover {
 }
 
 .item-form,
-.project-form {
+.project-form,
+.error-modal {
   position: absolute;
   background-color: white;
   display: flex;
@@ -159,3 +163,107 @@ li:hover {
   flex-direction: column;
 }
 
+
+.item {
+  display: flex;
+  gap: 10px;
+}
+
+table {
+  margin-top: 20px;
+  border-collapse: collapse;
+  border: 1px solid gray;
+}
+
+th {
+  border-bottom: 1px solid gray;
+}
+
+tr:not(:nth-of-type(1)) {  
+  border-bottom: 1px dashed gray;
+  height: 100%;
+}
+
+
+td {
+  text-align: center;
+  word-break: break-word;
+  max-width: 150px;
+  height: 100%;
+}
+
+.blank {
+  background-color: white;
+  width: 33%;
+
+}
+
+.blank::after{
+  content: ' ';
+}
+
+.low {
+  background-color: green;
+}
+
+.low,
+.medium,
+.high {
+  display: flex;
+  justify-content: center;
+  flex: 1;
+  height: 100%;
+  align-items: center;
+  letter-spacing: 1px;
+}
+
+.low::after,
+.medium::after,
+.high:after {
+    content: '\00a0' ;
+}
+
+.low:hover::after {
+  content: 'BAIXA';
+}
+
+.medium {
+  background-color: yellow;
+  
+}
+
+.medium:hover::after {
+  content: 'MÉDIA'
+}
+
+.high {
+  background-color: red;
+}
+
+.high:hover::after {
+  content: 'ALTA'
+}
+
+
+.flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  justify-items: center;
+}
+
+
+
+.error-modal {
+  background-color: red;
+  color: white;
+}
+
+.error-modal .close-button:hover {
+  color: black;
+}
+
+.finished {
+  text-decoration: line-through;
+}
