@@ -1,9 +1,18 @@
 import User from './user';
 import Project from './project'
 import Item from './item';
+import { format } from 'date-fns';
+
 
 let user = new User();
-user.appendProject(new Project('Default','Teste'));
+if (localStorage.user) {
+  user.project_list = JSON.parse(localStorage.user).project_list;
+} else {
+  user.appendProject(new Project('Default','Teste'));
+}
+
+console.log(user);
+
 
 export default function component () {
   let content = document.createElement('div');
@@ -95,6 +104,7 @@ function _showProjectForm(){
     alert('Projeto ' + projectName + ' criado!')
     _closeErrorModal();
     _closeForm(e);
+    localStorage.user = JSON.stringify(user);
     let sidebar = document.getElementsByClassName('sidebar')[0];
     let list = document.getElementsByClassName('projects')[0];
     list.remove();
@@ -241,7 +251,6 @@ function _showItemForm(){
     }
     let projectName = document.getElementById('actual-project').textContent;
     let obj = user.searchProject(projectName);
-    console.log(obj)
     obj.items.push(new Item(title.value, description.value, dueDate.value, priority.value));
     alert('Item criado no projeto ' + projectName)
 
@@ -249,7 +258,8 @@ function _showItemForm(){
     _closeForm(e);
     // ATUALIZAR RENDERIZACAO DOS ITENS AQUI!
     _renderItems(projectName)
-  });
+    localStorage.user = JSON.stringify(user);
+    });
 
 
   element.appendChild(h3);
@@ -298,7 +308,14 @@ function _renderItems(projectName){
     let td2 = document.createElement('td');
     td2.textContent = e.description;
     let td3 = document.createElement('td');
-    td3.textContent = e.dueDate;
+    
+    let year = e.dueDate.slice(0,4);
+    let month = e.dueDate.slice(5,7);
+    let day = e.dueDate.slice(8,10);
+
+    let dateFormat = format(new Date(year, month-1, day), 'dd/MM/yyyy')
+    td3.textContent = dateFormat;
+
     let td4 = document.createElement('td');
     td4.className = 'flex';
     let signaling = document.createElement('div')
@@ -336,7 +353,6 @@ function _renderItems(projectName){
     e.finished == true ? checkbox.checked = true : checkbox.checked = false;
     checkbox.addEventListener('change', () => {
       e.finished == false ? e.finished = true : e.finished = false;
-      console.log(e.finished);
       return _renderItems(projectName);
     })
     td5.appendChild(checkbox);
@@ -347,6 +363,7 @@ function _renderItems(projectName){
     deleteButton.value = 'EXCLUIR'
     deleteButton.addEventListener('click', () => {  
       project.items.splice(tr.dataset.index,1);
+      localStorage.user = JSON.stringify(user);
       _renderItems(projectName);
     })
     td6.appendChild(deleteButton);
@@ -412,4 +429,10 @@ function _closeErrorModal(){
   if (errorModal) {
     return errorModal.remove();
   }
+}
+
+function _cacheInfo(){
+  localStorage.user = JSON.stringify(user);
+
+  
 }
